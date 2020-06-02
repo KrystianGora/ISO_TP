@@ -64,7 +64,7 @@ void ISOTP_TxStateMachine(void);
  * @param Length of payload in bytes.
  * @return ISOTP Error Status, @ref ISOTP_ErrorType_t.
  */
-ISOTP_ErrorType_t ISOTP_SendIsotpMsg(uint32_t CanMsgId_u32, uint8_t * isotpPayload_pu8, uint8_t dataSize_u8);
+ISOTP_ErrorType_t ISOTP_SendIsotpMsg(uint32_t CanMsgId_u32, uint8_t * isotpPayload_pu8, uint16_t dataSize_u16);
 
 /*
  * @brief Function parses raw CAN data into ISOTP payload. Should be invoked each

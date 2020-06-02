@@ -101,7 +101,7 @@ static uint16_t IsotpPayloadSize_u16;
  * @param Number of bytes to being transmitted.
  * @return ISOTP message type @ref ISOTP_MsgType_t
  */
-static ISOTP_MsgType_t ISOTP_CheckMsgType(uint8_t dataSize_u8);
+static ISOTP_MsgType_t ISOTP_CheckMsgType(uint16_t dataSize_u16);
 
 /*
  * @brief Function creates and sends Single frame.
@@ -147,23 +147,23 @@ static ISOTP_FrameType_t ISOTP_CheckIsotpCompatibility(uint8_t * rawData_pu8);
 
 /* ---------------------------FUNCTIONS DEFINITIONS---------------------------*/
 
-static ISOTP_MsgType_t ISOTP_CheckMsgType(uint8_t dataSize_u8)
+static ISOTP_MsgType_t ISOTP_CheckMsgType(uint16_t dataSize_u16)
 {
 	ISOTP_MsgType_t retValue_u8;
 	CurrentErrorStatus_u8 = ISOTP_NO_ERROR;
 
 	/* Check data size */
-	if (dataSize_u8 <= 7)
+	if (dataSize_u16 <= 7)
 	{
 		retValue_u8 = ISOTP_SINGLE_FRAME_MSG;
 	}
-	else if ((dataSize_u8 >= 8) && (dataSize_u8 <= 4095))
+	else if ((dataSize_u16 >= 8) && (dataSize_u16 <= 4095))
 	{
 		retValue_u8 = ISOTP_MULTI_FRAME_MSG;
 	}
 	else
 	{
-		retValue_u8 = 0xFF;
+		retValue_u8 = ISOTP_MSG_SIZE_EXCEEDS_4095;
 		CurrentErrorStatus_u8 = ISOTP_MSG_SIZE_EXCEEDS_4095;
 	}
 	return retValue_u8;
@@ -439,7 +439,7 @@ void ISOTP_TxStateMachine(void)
 }
 
 ISOTP_ErrorType_t ISOTP_SendIsotpMsg(uint32_t CanMsgId_u32,
-		uint8_t * isotpPayload_pu8, uint8_t dataSize_u8)
+		uint8_t * isotpPayload_pu8, uint16_t dataSize_u16)
 {
 	uint8_t retStatus_u8 = ISOTP_NO_ERROR;
 
@@ -448,16 +448,16 @@ ISOTP_ErrorType_t ISOTP_SendIsotpMsg(uint32_t CanMsgId_u32,
 	{
 
 		/* Check type of requested message */
-		ISOTP_MsgType_t msgType = ISOTP_CheckMsgType(dataSize_u8);
+		ISOTP_MsgType_t msgType = ISOTP_CheckMsgType(dataSize_u16);
 
 		/* Get CAN ID field */
 		CanId_u32 = CanMsgId_u32;
 
 		/* Update size of message payload */
-		IsotpPayloadSize_u16 = dataSize_u8;
+		IsotpPayloadSize_u16 = dataSize_u16;
 
 		/* Get payload */
-		memcpy(IsotpPayload_au8, isotpPayload_pu8, dataSize_u8);
+		memcpy(IsotpPayload_au8, isotpPayload_pu8, dataSize_u16);
 
 		switch (msgType)
 		{
