@@ -255,7 +255,7 @@ void ISOTP_TxStateMachine(void)
 	static uint16_t frameCounter_u16;
 	static uint32_t timeStampStart_u32;
 	static uint32_t timeStampStop_u32;
-	static uint8_t frameIndex_u8 = 0x01;
+	static uint8_t frameIndex_u8;
 	static _Bool isFirstConsFrameTranssmited = RESET;
 	uint8_t currentFramePayloadSize_u8;
 	uint8_t currentTimeStampOffset_u8;
@@ -289,6 +289,9 @@ void ISOTP_TxStateMachine(void)
 
 		/* Reset frame counter */
 		frameCounter_u16 = 0;
+
+		/* Set frame index for the next consecutive frame */
+		frameIndex_u8 = 0x01;
 
 		/* Indicate that first consecutive frame has not been transmitted yet */
 		isFirstConsFrameTranssmited = RESET;
@@ -485,9 +488,9 @@ ISOTP_ErrorType_t ISOTP_SendIsotpMsg(uint32_t CanMsgId_u32,
 	else
 	{
 		CurrentErrorStatus_u8 = ISOTP_SENDING_OTHER_MSG_IN_PROGRESS;
+	    retStatus_u8 = CurrentErrorStatus_u8;
 	}
 
-	retStatus_u8 = CurrentErrorStatus_u8;
 	return retStatus_u8;
 }
 
