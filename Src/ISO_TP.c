@@ -290,6 +290,9 @@ void ISOTP_TxStateMachine(void)
 		/* Reset frame counter */
 		frameCounter_u16 = 0;
 
+		/* Indicate that first consecutive frame has not been transmitted yet */
+		isFirstConsFrameTranssmited = RESET;
+
 		CurrentState_u8 = WAIT_FOR_FLOW_FRAME_STATE;
 		break;
 
@@ -335,7 +338,8 @@ void ISOTP_TxStateMachine(void)
 		switch (ISOTP_TransmissionConfigTx_s.FC_Flag_u8)
 		{
 		case ISOTP_FC_CONTINUE:
-			/* Check wheter first consecutive frame is transmitted */
+
+			/* Check whether first consecutive frame is transmitted */
 			if (isFirstConsFrameTranssmited == RESET)
 			{
 
@@ -369,6 +373,9 @@ void ISOTP_TxStateMachine(void)
 
 				/* Increment frame counter */
 				frameCounter_u16++;
+
+				/* Set the flag indicating that first frame is transmitted */
+				isFirstConsFrameTranssmited = SET;
 			}
 			else
 			{
