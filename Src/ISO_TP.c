@@ -130,13 +130,14 @@ static void ISOTP_SendConsFrame(uint8_t * data_pu8, uint8_t dataSize_u8,
 
 /*
  * @brief Function creates and sends Flow frame.
+ * @param Response Can Id, should be same as last received first or consecutive frame.
  * @param FC flag Flow frame field, for allowed values @ref ISOTP_FC_Flags_t.
  * @param Number of Consecutive frames allowed to being send. All when equal to 0.
  * @param Delay between two Consecutive frames. Values up to 127 - time in ms.
  * Values from 241 to 249 - time from 100 to 900 us. Other values are forbidden.
  */
-static void ISOTP_SendFlowFrame(uint8_t FC_u8, uint8_t blockSize_u8,
-		uint8_t ST_u8);
+static void ISOTP_SendFlowFrame(uint32_t canRxId_u32, uint8_t FC_u8, uint8_t blockSize_u8,
+        uint8_t ST_u8);
 
 /*
  * @brief Function checks whether received data is compatible with ISOTP.
@@ -208,7 +209,7 @@ static void ISOTP_SendConsFrame(uint8_t * data_pu8, uint8_t dataSize_u8,
 	ISOTP_SendCanFrame(CanId_u32, (1 + dataSize_u8), rxBuffer_au8);
 }
 
-static void ISOTP_SendFlowFrame(uint8_t FC_u8, uint8_t blockSize_u8,
+static void ISOTP_SendFlowFrame(uint32_t canRxId_u32, uint8_t FC_u8, uint8_t blockSize_u8,
 		uint8_t ST_u8)
 {
 	uint8_t rxBuffer_au8[8];
@@ -219,7 +220,7 @@ static void ISOTP_SendFlowFrame(uint8_t FC_u8, uint8_t blockSize_u8,
 	rxBuffer_au8[2] = ST_u8;
 
 	/* Send CAN message */
-	ISOTP_SendCanFrame(CanId_u32, 3, rxBuffer_au8);
+	ISOTP_SendCanFrame(canRxId_u32, 3, rxBuffer_au8);
 }
 
 static ISOTP_FrameType_t ISOTP_CheckIsotpCompatibility(uint8_t * rawData_pu8)
@@ -494,9 +495,8 @@ ISOTP_ErrorType_t ISOTP_SendIsotpMsg(uint32_t CanMsgId_u32,
 	return retStatus_u8;
 }
 
-ISOTP_ErrorType_t ISOTP_GetIsotpPayload(uint8_t * rawData_pu8,
-		uint8_t canDLC_u8, uint8_t * isotpPayload_pu8,
-		uint16_t * payloadSize_pu16)
+ISOTP_ErrorType_t ISOTP_GetIsotpPayload(uint8_t * rawData_pu8, uint32_t canId_u32,
+        uint8_t canDLC_u8, uint8_t * isotpPayload_pu8, uint16_t * payloadSize_pu16)
 {
 	ISOTP_ErrorType_t retStatus_u8 = ISOTP_NO_ERROR;
 	static uint16_t fullMsgSize_u16;
@@ -561,7 +561,7 @@ ISOTP_ErrorType_t ISOTP_GetIsotpPayload(uint8_t * rawData_pu8,
 				consecutiveFrameExpected_bo = SET;
 
 				/* Send flow frame */
-				ISOTP_SendFlowFrame(ISOTP_TransmissionConfigRx_s.FC_Flag_u8,
+				ISOTP_SendFlowFrame(canId_u32, ISOTP_TransmissionConfigRx_s.FC_Flag_u8,
 				                ISOTP_TransmissionConfigRx_s.BlockSize_u8,
 				                ISOTP_TransmissionConfigRx_s.ST_u8);
 

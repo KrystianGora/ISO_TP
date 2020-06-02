@@ -70,12 +70,13 @@ ISOTP_ErrorType_t ISOTP_SendIsotpMsg(uint32_t CanMsgId_u32, uint8_t * isotpPaylo
  * @brief Function parses raw CAN data into ISOTP payload. Should be invoked each
  * time when CAN message is received.
  * @param Raw CAN data.
+ * @param CAN Id of received message.
  * @param Value of CAN DLC field.
  * @param [out] Parsed ISOTP payload.
  * @param Length of payload in bytes.
  * @return ISOTP Error Status, @ref ISOTP_ErrorType_t.
  */
-ISOTP_ErrorType_t ISOTP_GetIsotpPayload(uint8_t * rawData_pu8,
+ISOTP_ErrorType_t ISOTP_GetIsotpPayload(uint8_t * rawData_pu8, uint32_t canId_u32,
 		uint8_t canDLC_u8, uint8_t * isotpPayload_pu8, uint16_t * payloadSize_pu16);
 
 /*
