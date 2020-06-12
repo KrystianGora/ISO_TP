@@ -58,6 +58,11 @@ void ISOTP_SendCanFrame(uint32_t msgId_u32, uint8_t dataLength_u8, uint8_t * dat
 void ISOTP_TxStateMachine(void);
 
 /*
+ * @brief Function initializes ISOTP Library
+ */
+void ISOTP_Init(void);
+
+/*
  * @brief USER request for sending message in format compatible with ISOTP.
  * @param CAN ID field
  * @param Isotp payload.

@@ -250,6 +250,13 @@ static ISOTP_FrameType_t ISOTP_CheckIsotpCompatibility(uint8_t * rawData_pu8)
 	return retValue_u8;
 }
 
+void ISOTP_Init(void)
+{
+    /* Discard pending transmission */
+    ISOTP_SendFlowFrame(0, ISOTP_FC_ABORT, 0, 1);
+
+}
+
 void ISOTP_TxStateMachine(void)
 {
 	/* Variable for Consecutive frame transmitting */
@@ -602,6 +609,12 @@ ISOTP_ErrorType_t ISOTP_GetIsotpPayload(uint8_t * rawData_pu8, uint32_t canId_u3
 
 					/* Increment expected frame index */
 					expectedConsFrameIndex_u8++;
+
+					/* Reset indexer if it exceeds 15 */
+					if(expectedConsFrameIndex_u8 > 15)
+					{
+					    expectedConsFrameIndex_u8 = 0;
+					}
 
 					/* Check whether receiving is completed */
 					if (remainingMsgSize_u16 == 0)
