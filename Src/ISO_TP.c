@@ -337,6 +337,11 @@ void ISOTP_TxStateMachine(void)
 			currentTimeStampOffset_u8 = (ISOTP_TransmissionConfigTx_s.ST_u8
 					- 240);
 		}
+		else
+		{
+		    /* Wrong ST field */
+		    currentTimeStampOffset_u8 = 0;
+		}
 
 		/* Check Control Flag */
 		switch (ISOTP_TransmissionConfigTx_s.FC_Flag_u8)
