@@ -250,10 +250,10 @@ static ISOTP_FrameType_t ISOTP_CheckIsotpCompatibility(uint8_t * rawData_pu8)
 	return retValue_u8;
 }
 
-void ISOTP_Init(void)
+void ISOTP_Abort(void)
 {
     /* Discard pending transmission */
-    ISOTP_SendFlowFrame(0, ISOTP_FC_ABORT, 0, 1);
+    ISOTP_SendFlowFrame(CanId_u32, ISOTP_FC_ABORT, 0, 0);
 
 }
 

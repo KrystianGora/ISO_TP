@@ -58,9 +58,9 @@ void ISOTP_SendCanFrame(uint32_t msgId_u32, uint8_t dataLength_u8, uint8_t * dat
 void ISOTP_TxStateMachine(void);
 
 /*
- * @brief Function initializes ISOTP Library
+ * @brief Function sends flow frame to abort current transmission
  */
-void ISOTP_Init(void);
+void ISOTP_Abort(void);
 
 /*
  * @brief USER request for sending message in format compatible with ISOTP.
