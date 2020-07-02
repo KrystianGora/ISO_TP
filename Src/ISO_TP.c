@@ -68,12 +68,12 @@ ISOTP_TransmissionConfig_t ISOTP_TransmissionConfigRx_s;
 /*
  * @brief State machine status
  */
-static uint8_t CurrentState_u8 = IDLE_STATE;
+static uint8_t CurrentState_u8 = (uint8_t) IDLE_STATE;
 
 /*
  * @brief Recent library error
  */
-static ISOTP_ErrorType_t CurrentErrorStatus_u8 = 0;
+static ISOTP_ErrorType_t CurrentErrorStatus_u8 = ISOTP_NO_ERROR;
 
 /*
  * @brief Flag indicating Flow message receiving
@@ -164,7 +164,7 @@ static ISOTP_MsgType_t ISOTP_CheckMsgType(uint16_t dataSize_u16)
 	}
 	else
 	{
-		retValue_u8 = ISOTP_MSG_SIZE_EXCEEDS_4095;
+		retValue_u8 = (ISOTP_MsgType_t) ISOTP_MSG_SIZE_EXCEEDS_4095;
 		CurrentErrorStatus_u8 = ISOTP_MSG_SIZE_EXCEEDS_4095;
 	}
 	return retValue_u8;
@@ -225,7 +225,7 @@ static void ISOTP_SendFlowFrame(uint32_t canRxId_u32, uint8_t FC_u8, uint8_t blo
 
 static ISOTP_FrameType_t ISOTP_CheckIsotpCompatibility(uint8_t * rawData_pu8)
 {
-	uint8_t retValue_u8;
+    ISOTP_FrameType_t retValue_u8;
 	uint8_t dataType_u8 = (rawData_pu8[0] & 0xF0);
 
 	switch (dataType_u8)
@@ -243,7 +243,7 @@ static ISOTP_FrameType_t ISOTP_CheckIsotpCompatibility(uint8_t * rawData_pu8)
 		retValue_u8 = ISOTP_FLOW_FRAME;
 		break;
 	default:
-		retValue_u8 = 0xFF;
+		retValue_u8 = ISOTP_NO_COMPATIBLE;
 		break;
 	}
 
